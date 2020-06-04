@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 long long get_fibonacci_huge_naive(long long n, long long m) {
     if (n <= 1)
@@ -15,58 +16,32 @@ long long get_fibonacci_huge_naive(long long n, long long m) {
 
     return current % m;
 }
-
-bool sequence_check(long long fib[], long long index)
-{
-	for(int i=0;i<index;i++)
-	{
-		std::cout<<"i = "<<i<<std::endl;
-		std::cout<<"index  = "<<index<<std::endl;
-		if(fib[i]!=fib[i+index])
-			return false;			
-	}
-	std::cout<<std::endl;
-	return true;
-}
 long long find_sequence(long long n, long long m) {
-    // write your code here
-    long long *fib = new long long[n+1];	
-    long long *fib_mod = new long long[n+1];
-    long long even_counter = 3;
-    fib[0]=0; fib[1]=1; 	
-    fib_mod[0]=0; fib_mod[1]=1;
-    for(int i=2;i<=n;i++)
+	long long  f_0 = 0, f_1 =1, f = f_0+f_1;
+    for(int i=0;i<m*m;i++)
     {
-		fib[i]=fib[i-1]+fib[i-2];
-		fib_mod[i]=fib[i]%m;
-   		if(even_counter==i)
-		{
-        	if(sequence_check(fib_mod,(even_counter+1)/2))
-				return (n%((even_counter+1)/2));
-	    	even_counter+=2;
-		}
+    	f = (f_1+f_0)%m;
+    	f_0 = f_1;
+    	f_1 = f;
+    	if(f_0==0 && f_1==1)
+    	{
+    		// std::cout<<"i = "<<i-1<<std::endl;
+    		return i+1;
+    	}
     }
-    return 0;
 }
 
 long long get_fibonacci_huge(long long n, long long m)
-{
-	long long sequence = find_sequence(n,m);
-	if(sequence==0)
+{	
+	long long rem = n%find_sequence(n,m);
+	long long f_0 = 0, f_1 = 1, f = rem;
+	for(int i=1;i<rem;i++)
 	{
-		std::cout<<"Sequence not found"<<std::endl;	
-		return 0;
+		f = (f_1+f_0)%m;
+    	f_0 = f_1;
+    	f_1 = f;
 	}
-	while(sequence<m && m!=1)
-	{
-		sequence = find_sequence(sequence,m);	
-	}
-	
-    int *fib = new int[sequence+1];
-    fib[0]=0; fib[1]=1;
-    for(int i=2;i<=sequence;i++)
-		fib[i]=fib[i-1]+fib[i-2];
-    return fib[sequence]%m;
+	return f%m;
 }
 
 
